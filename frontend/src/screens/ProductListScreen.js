@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useReducer } from 'react';
 import axios from 'axios';
+import { FaEdit, FaTrashAlt, FaEye, FaPlus } from 'react-icons/fa';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -52,7 +53,7 @@ const reducer = (state, action) => {
   }
 };
 
-export default function ProductListScreen() {
+const ProductListScreen = () => {
   const [
     {
       loading,
@@ -80,40 +81,38 @@ export default function ProductListScreen() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get(`/api/products/admin?page=${page} `, {
+        const { data } = await axios.get(`/api/products/admin?page=${page}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-
+  
         dispatch({ type: 'FETCH_SUCCESS', payload: data });
-      } catch (err) {}
+      } catch (err) {
+        console.error(err);
+        dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
+      }
     };
-
+  
     if (successDelete) {
       dispatch({ type: 'DELETE_RESET' });
     } else {
       fetchData();
     }
-  }, [page, userInfo, successDelete]);
+  },  [page, userInfo, successDelete]);
 
   const createHandler = async () => {
     if (window.confirm('Are you sure to create?')) {
       try {
         dispatch({ type: 'CREATE_REQUEST' });
-        const { data } = await axios.post(
-          '/api/products',
-          {},
-          {
-            headers: { Authorization: `Bearer ${userInfo.token}` },
-          }
-        );
-        toast.success('product created successfully');
+        const { data } = await axios.post('/api/products', {}, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+
+        toast.success('Product created successfully');
         dispatch({ type: 'CREATE_SUCCESS' });
         navigate(`/admin/product/${data.product._id}`);
       } catch (err) {
-        toast.error(getError(error));
-        dispatch({
-          type: 'CREATE_FAIL',
-        });
+        toast.error(getError(err));
+        dispatch({ type: 'CREATE_FAIL' });
       }
     }
   };
@@ -124,13 +123,12 @@ export default function ProductListScreen() {
         await axios.delete(`/api/products/${product._id}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        toast.success('product deleted successfully');
+
+        toast.success('Product deleted successfully');
         dispatch({ type: 'DELETE_SUCCESS' });
       } catch (err) {
-        toast.error(getError(error));
-        dispatch({
-          type: 'DELETE_FAIL',
-        });
+        toast.error(getError(err));
+        dispatch({ type: 'DELETE_FAIL' });
       }
     }
   };
@@ -143,8 +141,19 @@ export default function ProductListScreen() {
         </Col>
         <Col className="col text-end">
           <div>
-            <Button type="button" onClick={createHandler}>
-              Create Product
+            <Button
+              type="button"
+              onClick={createHandler}
+              style={{
+                backgroundColor: '##ecf0f1',
+                color: '#fff',
+                border: 'none',
+                padding: '10px 20px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+              }}
+            >
+              <FaPlus style={{ marginRight: '5px' }} className="icon" />
             </Button>
           </div>
         </Col>
@@ -159,40 +168,49 @@ export default function ProductListScreen() {
         <MessageBox variant="danger">{error}</MessageBox>
       ) : (
         <>
-          <table className="table">
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
             <thead>
               <tr>
-                <th>ID</th>
-                <th>NAME</th>
-                <th>PRICE</th>
-                <th>CATEGORY</th>
-                <th>BRAND</th>
-                <th>ACTIONS</th>
+                <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left', backgroundColor: '#3498db' }}>ID</th>
+                <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left', backgroundColor: '#3498db' }}>NAME</th>
+                <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left', backgroundColor: '#3498db' }}>PRICE</th>
+                <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left', backgroundColor: '#3498db' }}>CATEGORY</th>
+                <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left', backgroundColor: '#3498db' }}>VARIETY</th>
+                <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left', backgroundColor: '#3498db' }}>ACTIONS</th>
               </tr>
             </thead>
             <tbody>
               {products.map((product) => (
                 <tr key={product._id}>
-                  <td>{product._id}</td>
-                  <td>{product.name}</td>
-                  <td>{product.price}</td>
-                  <td>{product.category}</td>
-                  <td>{product.brand}</td>
+                  <td style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left' }}>{product._id}</td>
+                  <td style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left' }}>{product.name}</td>
+                  <td style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left' }}>₹{product.price}</td>
+                  <td style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left' }}>{product.category}</td>
+                  <td style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left' }}>{product.brand}</td>
                   <td>
                     <Button
                       type="button"
                       variant="light"
                       onClick={() => navigate(`/admin/product/${product._id}`)}
+                      style={{ marginRight: '5px', padding: '8px 15px', borderRadius: '4px', cursor: 'pointer' }}
                     >
-                      Edit
+                      <FaEdit style={{ marginRight: '5px' }} className="action-icon" />
                     </Button>
-                    &nbsp;
                     <Button
                       type="button"
-                      variant="light"
+                      variant="danger"
                       onClick={() => deleteHandler(product)}
+                      style={{ marginRight: '5px', padding: '8px 15px', borderRadius: '4px', cursor: 'pointer' }}
                     >
-                      Delete
+                      <FaTrashAlt style={{ marginRight: '5px' }} className="action-icon" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="info"
+                      onClick={() => navigate(`/admin/product/${product._id}`)}
+                      style={{ marginRight: '5px', padding: '8px 15px', borderRadius: '4px', cursor: 'pointer' }}
+                    >
+                      <FaEye style={{ marginRight: '5px' }} className="action-icon" />
                     </Button>
                   </td>
                 </tr>
@@ -214,4 +232,6 @@ export default function ProductListScreen() {
       )}
     </div>
   );
-}
+};
+
+export default ProductListScreen;

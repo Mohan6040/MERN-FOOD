@@ -20,7 +20,7 @@ import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import OrderScreen from './screens/OrderScreen';
 import OrderHistoryScreen from './screens/OrderHistoryScreen';
 import ProfileScreen from './screens/ProfileScreen';
-import Button from 'react-bootstrap/Button';
+//import Button from 'react-bootstrap/Button';
 import { getError } from './utils';
 import axios from 'axios';
 import SearchBox from './components/SearchBox';
@@ -36,6 +36,13 @@ import UserEditScreen from './screens/UserEditScreen';
 import MapScreen from './screens/MapScreen';
 import ForgetPasswordScreen from './screens/ForgetPasswordScreen';
 import ResetPasswordScreen from './screens/ResetPasswordScreen';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+import Aboutus from './screens/Aboutus';
+import Feedback from './screens/Feedback';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -65,6 +72,16 @@ function App() {
   return (
     <BrowserRouter>
       <div
+        style={{
+          backgroundColor: '#faf0e6',
+          backgroundSize: 'contain',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          overflowX: 'hidden',
+        }}
         className={
           sidebarIsOpen
             ? fullBox
@@ -77,59 +94,33 @@ function App() {
       >
         <ToastContainer position="bottom-center" limit={1} />
         <header>
-          <Navbar bg="dark" variant="dark" expand="lg">
+          <Navbar
+            style={{ backgroundColor: '#ffa078' }}
+            variant="dark"
+            expand="lg"
+          >
             <Container>
-              <Button
-                variant="dark"
-                onClick={() => setSidebarIsOpen(!sidebarIsOpen)}
-              >
-                <i className="fas fa-bars"></i>
-              </Button>
-
               <LinkContainer to="/">
-                <Navbar.Brand>amazona</Navbar.Brand>
+                <Navbar.Brand>
+                  <img
+                    src="/images/final.png"
+                    alt=""
+                    style={{ width: '250px', height: 'auto' }}
+                  />
+                </Navbar.Brand>
               </LinkContainer>
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
-                <SearchBox />
+                <SearchBox style={{ textAlign: 'center' }} />
                 <Nav className="me-auto  w-100  justify-content-end">
-                  <Link to="/cart" className="nav-link">
-                    Cart
-                    {cart.cartItems.length > 0 && (
-                      <Badge pill bg="danger">
-                        {cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
-                      </Badge>
-                    )}
-                  </Link>
-                  {userInfo ? (
-                    <NavDropdown title={userInfo.name} id="basic-nav-dropdown">
-                      <LinkContainer to="/profile">
-                        <NavDropdown.Item>User Profile</NavDropdown.Item>
-                      </LinkContainer>
-                      <LinkContainer to="/orderhistory">
-                        <NavDropdown.Item>Order History</NavDropdown.Item>
-                      </LinkContainer>
-                      <NavDropdown.Divider />
-                      <Link
-                        className="dropdown-item"
-                        to="#signout"
-                        onClick={signoutHandler}
-                      >
-                        Sign Out
-                      </Link>
-                    </NavDropdown>
-                  ) : (
-                    <Link className="nav-link" to="/signin">
-                      Sign In
-                    </Link>
-                  )}
                   {userInfo && userInfo.isAdmin && (
-                    <NavDropdown title="Admin" id="admin-nav-dropdown">
-                      <LinkContainer to="/admin/dashboard">
-                        <NavDropdown.Item>Dashboard</NavDropdown.Item>
-                      </LinkContainer>
+                    <NavDropdown
+                      style={{ marginRight: '5px', color: '#fff' }}
+                      title="Admin"
+                      id="admin-nav-dropdown"
+                    >
                       <LinkContainer to="/admin/products">
-                        <NavDropdown.Item>Products</NavDropdown.Item>
+                        <NavDropdown.Item>Foods</NavDropdown.Item>
                       </LinkContainer>
                       <LinkContainer to="/admin/orders">
                         <NavDropdown.Item>Orders</NavDropdown.Item>
@@ -138,6 +129,94 @@ function App() {
                         <NavDropdown.Item>Users</NavDropdown.Item>
                       </LinkContainer>
                     </NavDropdown>
+                  )}
+                  <Link to="/cart" className="nav-link">
+                    <span style={{ marginRight: '5px', color: '#000' }}>
+                      <FontAwesomeIcon icon={faShoppingCart} />
+                    </span>
+                    {cart.cartItems.length > 0 && (
+                      <Badge pill bg="danger">
+                        {cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
+                      </Badge>
+                    )}
+                  </Link>
+                  {userInfo ? (
+                    <NavDropdown
+                      title={
+                        <>
+                          <FontAwesomeIcon
+                            icon={faUser}
+                            style={{
+                              marginRight: '5px',
+                              color: '#fff',
+                              fontSize: '20px',
+                            }}
+                          />{' '}
+                        </>
+                      }
+                      id="basic-nav-dropdown"
+                      style={{
+                        color: '#000',
+                        borderRadius: '5px',
+                        boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
+                      }}
+                    >
+                      {/* User Profile */}
+                      <LinkContainer to="/profile">
+                        <NavDropdown.Item
+                          style={{ color: '#fff', fontWeight: 'bold' }}
+                        >
+                          User Profile
+                        </NavDropdown.Item>
+                      </LinkContainer>
+
+                      {/* Order History */}
+                      <LinkContainer to="/orderhistory">
+                        <NavDropdown.Item
+                          style={{ color: '#fff', fontWeight: 'bold' }}
+                        >
+                          Order History
+                        </NavDropdown.Item>
+                      </LinkContainer>
+
+                      {/* About Us */}
+                      <LinkContainer to="/aboutus">
+                        <NavDropdown.Item
+                          style={{ color: '#fff', fontWeight: 'bold' }}
+                        >
+                          About Us
+                        </NavDropdown.Item>
+                      </LinkContainer>
+
+                      {/* Contact Us */}
+                      <LinkContainer to="/feedback">
+                        <NavDropdown.Item
+                          style={{ color: '#fff', fontWeight: 'bold' }}
+                        >
+                          Contact Us
+                        </NavDropdown.Item>
+                      </LinkContainer>
+
+                      <NavDropdown.Divider />
+
+                      {/* Sign Out */}
+                      <Link
+                        className="dropdown-item"
+                        to="#signout"
+                        onClick={signoutHandler}
+                        style={{ color: '#e74c3c', fontWeight: 'bold' }}
+                      >
+                        Sign Out
+                      </Link>
+                    </NavDropdown>
+                  ) : (
+                    <Link
+                      className="nav-link"
+                      to="/signin"
+                      style={{ color: '#000000' }}
+                    >
+                      Sign In
+                    </Link>
                   )}
                 </Nav>
               </Navbar.Collapse>
@@ -179,11 +258,12 @@ function App() {
                 path="/forget-password"
                 element={<ForgetPasswordScreen />}
               />
+              <Route path="/Feedback" element={<Feedback />} />
               <Route
                 path="/reset-password/:token"
                 element={<ResetPasswordScreen />}
               />
-
+              <Route path="/aboutus" element={<Aboutus />} />
               <Route
                 path="/profile"
                 element={
@@ -276,8 +356,12 @@ function App() {
             </Routes>
           </Container>
         </main>
-        <footer>
-          <div className="text-center">All rights reserved</div>
+        <footer className="w-full">
+          <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2 lg:px-0">
+            <div className="text-center">
+              <p className="text-gray-700">All rights reserved</p>
+            </div>
+          </div>
         </footer>
       </div>
     </BrowserRouter>

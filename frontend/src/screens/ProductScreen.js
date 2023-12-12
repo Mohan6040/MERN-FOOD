@@ -1,37 +1,40 @@
-import axios from 'axios';
-import { useContext, useEffect, useReducer, useRef, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Card';
-import ListGroup from 'react-bootstrap/ListGroup';
-import Form from 'react-bootstrap/Form';
-import Badge from 'react-bootstrap/Badge';
-import Button from 'react-bootstrap/Button';
-import Rating from '../components/Rating';
-import { Helmet } from 'react-helmet-async';
-import LoadingBox from '../components/LoadingBox';
-import MessageBox from '../components/MessageBox';
-import { getError } from '../utils';
-import { Store } from '../Store';
-import FloatingLabel from 'react-bootstrap/FloatingLabel';
-import { toast } from 'react-toastify';
+import axios from "axios";
+import { useContext, useEffect, useReducer, useRef, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Card from "react-bootstrap/Card";
+import ListGroup from "react-bootstrap/ListGroup";
+import Form from "react-bootstrap/Form";
+import Badge from "react-bootstrap/Badge";
+import Button from "react-bootstrap/Button";
+import Rating from "../components/Rating";
+import { Helmet } from "react-helmet-async";
+import LoadingBox from "../components/LoadingBox";
+import MessageBox from "../components/MessageBox";
+import { getError } from "../utils";
+import { Store } from "../Store";
+import FloatingLabel from "react-bootstrap/FloatingLabel";
+import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'REFRESH_PRODUCT':
+    case "REFRESH_PRODUCT":
       return { ...state, product: action.payload };
-    case 'CREATE_REQUEST':
+    case "CREATE_REQUEST":
       return { ...state, loadingCreateReview: true };
-    case 'CREATE_SUCCESS':
+    case "CREATE_SUCCESS":
       return { ...state, loadingCreateReview: false };
-    case 'CREATE_FAIL':
+    case "CREATE_FAIL":
       return { ...state, loadingCreateReview: false };
-    case 'FETCH_REQUEST':
+    case "FETCH_REQUEST":
       return { ...state, loading: true };
-    case 'FETCH_SUCCESS':
+    case "FETCH_SUCCESS":
       return { ...state, product: action.payload, loading: false };
-    case 'FETCH_FAIL':
+    case "FETCH_FAIL":
       return { ...state, loading: false, error: action.payload };
     default:
       return state;
@@ -42,8 +45,8 @@ function ProductScreen() {
   let reviewsRef = useRef();
 
   const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState('');
-  const [selectedImage, setSelectedImage] = useState('');
+  const [comment, setComment] = useState("");
+  const [selectedImage, setSelectedImage] = useState("");
 
   const navigate = useNavigate();
   const params = useParams();
@@ -53,20 +56,25 @@ function ProductScreen() {
     useReducer(reducer, {
       product: [],
       loading: true,
-      error: '',
+      error: "",
     });
   useEffect(() => {
     const fetchData = async () => {
-      dispatch({ type: 'FETCH_REQUEST' });
+      dispatch({ type: "FETCH_REQUEST" });
       try {
         const result = await axios.get(`/api/products/slug/${slug}`);
-        dispatch({ type: 'FETCH_SUCCESS', payload: result.data });
+        dispatch({ type: "FETCH_SUCCESS", payload: result.data });
       } catch (err) {
-        dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
+        dispatch({ type: "FETCH_FAIL", payload: getError(err) });
       }
     };
     fetchData();
   }, [slug]);
+
+// Add these state variables at the beginning of the ProductScreen component
+const [like, setLike] = useState(false);
+const [dislike, setDislike] = useState(false);
+const [buttonsDisabled, setButtonsDisabled] = useState(false);
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo } = state;
@@ -75,20 +83,20 @@ function ProductScreen() {
     const quantity = existItem ? existItem.quantity + 1 : 1;
     const { data } = await axios.get(`/api/products/${product._id}`);
     if (data.countInStock < quantity) {
-      window.alert('Sorry. Product is out of stock');
+      window.alert("Sorry. Product is out of stock");
       return;
     }
     ctxDispatch({
-      type: 'CART_ADD_ITEM',
+      type: "CART_ADD_ITEM",
       payload: { ...product, quantity },
     });
-    navigate('/cart');
+    navigate("/cart");
   };
 
   const submitHandler = async (e) => {
     e.preventDefault();
     if (!comment || !rating) {
-      toast.error('Please enter comment and rating');
+      toast.error("Please enter comment and rating");
       return;
     }
     try {
@@ -101,20 +109,20 @@ function ProductScreen() {
       );
 
       dispatch({
-        type: 'CREATE_SUCCESS',
+        type: "CREATE_SUCCESS",
       });
-      toast.success('Review submitted successfully');
+      toast.success("Review submitted successfully");
       product.reviews.unshift(data.review);
       product.numReviews = data.numReviews;
       product.rating = data.rating;
-      dispatch({ type: 'REFRESH_PRODUCT', payload: product });
+      dispatch({ type: "REFRESH_PRODUCT", payload: product });
       window.scrollTo({
-        behavior: 'smooth',
+        behavior: "smooth",
         top: reviewsRef.current.offsetTop,
       });
     } catch (error) {
       toast.error(getError(error));
-      dispatch({ type: 'CREATE_FAIL' });
+      dispatch({ type: "CREATE_FAIL" });
     }
   };
   return loading ? (
@@ -124,13 +132,20 @@ function ProductScreen() {
   ) : (
     <div>
       <Row>
-        <Col md={6}>
-          <img
-            className="img-large"
-            src={selectedImage || product.image}
-            alt={product.name}
-          ></img>
-        </Col>
+    <Col md={6}>
+      <img
+        style={{
+          width: '100%', // Ensure the image takes the full width of its container
+          maxHeight: '400px', // Set a maximum height to prevent the image from becoming too large
+          objectFit: 'cover', // Ensure the image covers the entire container
+          borderRadius: '8px', // Optional: Add a border-radius for a rounded look
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Optional: Add a subtle box-shadow
+        }}
+        className="img-large"
+        src={selectedImage || product.image}
+        alt={product.name}
+      ></img>
+    </Col>
         <Col md={3}>
           <ListGroup variant="flush">
             <ListGroup.Item>
@@ -145,59 +160,31 @@ function ProductScreen() {
                 numReviews={product.numReviews}
               ></Rating>
             </ListGroup.Item>
-            <ListGroup.Item>Pirce : ${product.price}</ListGroup.Item>
             <ListGroup.Item>
-              <Row xs={1} md={2} className="g-2">
-                {[product.image, ...product.images].map((x) => (
-                  <Col key={x}>
-                    <Card>
-                      <Button
-                        className="thumbnail"
-                        type="button"
-                        variant="light"
-                        onClick={() => setSelectedImage(x)}
-                      >
-                        <Card.Img variant="top" src={x} alt="product" />
-                      </Button>
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
+              <b>Price : </b>
+              {new Intl.NumberFormat("en-IN", {
+                style: "currency",
+                currency: "INR",
+              }).format(product.price)}
             </ListGroup.Item>
+
             <ListGroup.Item>
-              Description:
+              <b>Description:</b>
               <p>{product.description}</p>
             </ListGroup.Item>
           </ListGroup>
-        </Col>
-        <Col md={3}>
+
           <Card>
             <Card.Body>
               <ListGroup variant="flush">
-                <ListGroup.Item>
-                  <Row>
-                    <Col>Price:</Col>
-                    <Col>${product.price}</Col>
-                  </Row>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Row>
-                    <Col>Status:</Col>
-                    <Col>
-                      {product.countInStock > 0 ? (
-                        <Badge bg="success">In Stock</Badge>
-                      ) : (
-                        <Badge bg="danger">Unavailable</Badge>
-                      )}
-                    </Col>
-                  </Row>
-                </ListGroup.Item>
-
                 {product.countInStock > 0 && (
                   <ListGroup.Item>
                     <div className="d-grid">
                       <Button onClick={addToCartHandler} variant="primary">
-                        Add to Cart
+                        Add to Cart<h1> </h1>
+                        <span style={{ fontSize: "20px", marginRight: "5px" }}>
+                          <FontAwesomeIcon icon={faShoppingCart} />
+                        </span>
                       </Button>
                     </div>
                   </ListGroup.Item>
@@ -227,6 +214,36 @@ function ProductScreen() {
         <div className="my-3">
           {userInfo ? (
             <form onSubmit={submitHandler}>
+              <Button
+            style={{
+              backgroundColor: like ? '#28a745' : 'transparent',
+              borderColor: '#28a745',
+              color: like ? '#fff' : '#28a745',
+              marginRight: '10px', // Adjust the margin between buttons
+            }}
+            disabled={buttonsDisabled || like}
+            onClick={() => {
+              setLike(true);
+              setButtonsDisabled(true);
+            }}
+          >
+            <FaThumbsUp /> Like
+          </Button>
+          {/* Dislike button with inline styles */}
+          <Button
+            style={{
+              backgroundColor: dislike ? '#dc3545' : 'transparent',
+              borderColor: '#dc3545',
+              color: dislike ? '#fff' : '#dc3545',
+            }}
+            disabled={buttonsDisabled || dislike}
+            onClick={() => {
+              setDislike(true);
+              setButtonsDisabled(true);
+            }}
+          >
+            <FaThumbsDown /> Dislike
+          </Button>
               <h2>Write a customer review</h2>
               <Form.Group className="mb-3" controlId="rating">
                 <Form.Label>Rating</Form.Label>
@@ -265,10 +282,10 @@ function ProductScreen() {
             </form>
           ) : (
             <MessageBox>
-              Please{' '}
+              Please{" "}
               <Link to={`/signin?redirect=/product/${product.slug}`}>
                 Sign In
-              </Link>{' '}
+              </Link>{" "}
               to write a review
             </MessageBox>
           )}

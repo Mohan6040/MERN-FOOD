@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { Store } from '../Store';
+import { FaEdit, FaTrashAlt} from 'react-icons/fa';
 import { getError } from '../utils';
 
 const reducer = (state, action) => {
@@ -103,11 +104,11 @@ export default function UserListScreen() {
         <table className="table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>NAME</th>
-              <th>EMAIL</th>
-              <th>IS ADMIN</th>
-              <th>ACTIONS</th>
+              <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left', backgroundColor: '#3498db' }}>ID</th>
+              <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left', backgroundColor: '#3498db' }}>NAME</th>
+              <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left', backgroundColor: '#3498db' }}>EMAIL</th>
+              <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left', backgroundColor: '#3498db' }}>IS ADMIN</th>
+              <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left', backgroundColor: '#3498db' }}>ACTIONS</th>
             </tr>
           </thead>
           <tbody>
@@ -122,16 +123,19 @@ export default function UserListScreen() {
                     type="button"
                     variant="light"
                     onClick={() => navigate(`/admin/user/${user._id}`)}
+                    style={{ marginRight: '5px', padding: '8px 15px', borderRadius: '4px', cursor: 'pointer' }}
                   >
-                    Edit
+                    <FaEdit style={{ marginRight: '5px' }} className="action-icon" />
                   </Button>
+                
                   &nbsp;
                   <Button
                     type="button"
-                    variant="light"
+                    variant="danger"
                     onClick={() => deleteHandler(user)}
-                  >
-                    Delete
+                    style={{ marginRight: '5px', padding: '8px 15px', borderRadius: '4px', cursor: 'pointer' }}
+                    >
+                      <FaTrashAlt style={{ marginRight: '5px' }} className="action-icon" />
                   </Button>
                 </td>
               </tr>

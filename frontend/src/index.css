@@ -66,9 +66,13 @@ main {
   height: 100%;
   position: absolute;
   left: -300px;
-  background-color: #100901;
-  transition: 0.5s;
+  background-color: #473e43;
+  transition: 1.5s;
+  overflow-y: auto; /* Add this line for vertical scrolling */
+  color: rgb(255, 255, 255); /* Add this line for white text color */
 }
+
+
 
 .site-container {
   transition: 0.4s;

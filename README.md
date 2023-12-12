@@ -1,18 +1,5 @@
-# MERN AMAZONA
 
-![amazona](/frontend/public/images/amazona.jpg)
-
-# React Tutorial - Build ECommerce in 6 Hours [2022]
-
-Welcome to my React and Node tutorial to build a fully-functional e-commerce website exactly like amazon. Open your code editor and follow me for the next hours to build an e-commerce website using MERN stack (MongoDB, ExpressJS, React and Node.JS).
-
-Watch it on Youtube:
-[https://www.youtube.com/watch?v=CDtPMR5y0QU](https://www.youtube.com/watch?v=CDtPMR5y0QU)
-
-## Demo Website
-
-- 👉 Render : [https://amazona.onrender.com](https://amazona.onrender.com)
-
+Welcome to my React and Node tutorial, where we'll construct a dynamic food delivery app using the MERN stack (MongoDB, ExpressJS, React, and Node.JS). This tutorial guides you through each step, from setting up MongoDB as our database to crafting user interfaces with React and implementing server-side logic with Node.JS and ExpressJS. Our aim is to provide a comprehensive understanding of how these technologies come together to create a feature-rich food delivery app named "Foodie."
 ## You Will Learn
 
 - HTML5 and CSS3: Semantic Elements, CSS Grid, Flexbox
@@ -20,7 +7,7 @@ Watch it on Youtube:
 - Context API: Store, Reducers, Actions
 - Node & Express: Web API, Body Parser, File Upload, JWT
 - MongoDB: Mongoose, Aggregation
-- Development: ESLint, Babel, Git, Github,
+- Development: ESLint, Babel, Git, Github,  
 - Deployment: Heroku
 
 ## Run Locally
@@ -28,8 +15,8 @@ Watch it on Youtube:
 ### 1. Clone repo
 
 ```
-$ git clone git@github.com:basir/mern-amazona.git
-$ cd mern-amazona
+$ git clone git@github.com:basir/mern-foodie.git
+$ cd mern-foodie
 ```
 
 ### 2. Create .env File
@@ -40,7 +27,7 @@ $ cd mern-amazona
 
 - Local MongoDB
   - Install it from [here](https://www.mongodb.com/try/download/community)
-  - In .env file update MONGODB_URI=mongodb://localhost/amazona
+  - In .env file update MONGODB_URI=mongodb://localhost/foodie
 - OR Atlas Cloud MongoDB
   - Create database at [https://cloud.mongodb.com](https://cloud.mongodb.com)
   - In .env file update MONGODB_URI=mongodb+srv://your-db-connection
@@ -72,9 +59,6 @@ $ npm start
 - Run http://localhost:3000/signin
 - Enter admin email and password and click signin
 
-## Support
-
-- Contact Instructor: [Basir](mailto:basir.jafarzadeh@gmail.com)
 
 # Lessons
 

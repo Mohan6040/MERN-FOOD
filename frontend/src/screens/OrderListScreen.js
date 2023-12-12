@@ -8,6 +8,7 @@ import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { Store } from '../Store';
 import { getError } from '../utils';
+import { FaTrashAlt,FaEye } from 'react-icons/fa';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -102,13 +103,11 @@ export default function OrderListScreen() {
         <table className="table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>USER</th>
-              <th>DATE</th>
-              <th>TOTAL</th>
-              <th>PAID</th>
-              <th>DELIVERED</th>
-              <th>ACTIONS</th>
+              <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left', backgroundColor: '#3498db' }}>ID</th>
+              <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left', backgroundColor: '#3498db' }}>USER</th>
+              <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left', backgroundColor: '#3498db' }}>DATE</th>
+              <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left', backgroundColor: '#3498db' }}>TOTAL</th>
+              <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left', backgroundColor: '#3498db' }}>ACTIONS</th>
             </tr>
           </thead>
           <tbody>
@@ -117,14 +116,7 @@ export default function OrderListScreen() {
                 <td>{order._id}</td>
                 <td>{order.user ? order.user.name : 'DELETED USER'}</td>
                 <td>{order.createdAt.substring(0, 10)}</td>
-                <td>{order.totalPrice.toFixed(2)}</td>
-                <td>{order.isPaid ? order.paidAt.substring(0, 10) : 'No'}</td>
-
-                <td>
-                  {order.isDelivered
-                    ? order.deliveredAt.substring(0, 10)
-                    : 'No'}
-                </td>
+                <td>₹{order.totalPrice.toFixed(2)}</td>
                 <td>
                   <Button
                     type="button"
@@ -132,17 +124,20 @@ export default function OrderListScreen() {
                     onClick={() => {
                       navigate(`/order/${order._id}`);
                     }}
+                    style={{ marginRight: '5px', padding: '8px 15px', borderRadius: '4px', cursor: 'pointer' }}
                   >
-                    Details
+                   <FaEye style={{ marginRight: '5px' }} className="action-icon" />
                   </Button>
                   &nbsp;
+                  
                   <Button
-                    type="button"
-                    variant="light"
-                    onClick={() => deleteHandler(order)}
-                  >
-                    Delete
-                  </Button>
+                      type="button"
+                      variant="danger"
+                      onClick={() => deleteHandler(order)}
+                      style={{ marginRight: '5px', padding: '8px 15px', borderRadius: '4px', cursor: 'pointer' }}
+                    >
+                      <FaTrashAlt style={{ marginRight: '5px' }} className="action-icon" />
+                    </Button>
                 </td>
               </tr>
             ))}
